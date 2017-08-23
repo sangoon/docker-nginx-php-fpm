@@ -12,5 +12,5 @@ account default
         auth off
         user 
         password 
-        from noreply@domain.org
+        from noreply@example.org
 

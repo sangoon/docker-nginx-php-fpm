@@ -2,6 +2,18 @@
 
 if [ ! -f /tmp/state/10-nginx ]; then
 sleep 2
+	
+	tokensFromEnv="LDAP_HOST LDAP_BIND_DN LDAP_BIND_PW LDAP_BASE_DN LDAP_ATTRIBUTE LDAP_SCOPE LDAP_FILTER LDAP_GROUP_ATTRIBUTE"
+
+	LDAP_ATTRIBUTE=${LDAP_ATTRIBUTE:="uid"}
+	LDAP_SCOPE=${LDAP_SCOPE:="sub"}
+	LDAP_FILTER=${LDAP_FILTER:="(objectClass=person)"}
+	LDAP_GROUP_ATTRIBUTE=${LDAP_GROUP_ATTRIBUTE:="uniquemember"}
+
+	for envVar in $tokensFromEnv; do
+	  envValue=$(echo "${!envVar}" | sed -e 's/[&\\\$]/\\&/g')
+	  sed -i -e "s|\$${envVar}|${envValue}|g" /etc/nginx/conf.d/01-ldap.conf;
+	done
 
 	### Check to see if this is a new install, if yes create directories...
 	if [ ! -f /www/html/index.php ] ; then

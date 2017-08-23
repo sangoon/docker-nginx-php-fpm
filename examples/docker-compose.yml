@@ -2,11 +2,12 @@ version: '2'
 
 services:
   nginx-php-fpm-app:
-    image: registry.selfdesign.org/docker/nginx-php-fpm
+    image: registry.selfdesign.org/docker/nginx-php-fpm:7.1-ldap
     container_name: nginx-php-fpm-app
     volumes:
     - ./data/:/www/html
     - ./logs/:/www/logs
+    - /etc/localtime:/etc/localtime:ro
     environment:
     - VIRTUAL_HOST=url.hostname.com
     - VIRTUAL_NETWORK=nginx-proxy
@@ -20,9 +21,16 @@ services:
     - UPLOAD_MAX_SIZE=2G
     - APC_SHM_SIZE=128M
     - OPCACHE_MEM_SIZE=128
-    - PHP_LOG_LEVEL=info
-    - PHP_TIMEOUT=300
     - TZ=America/Vancouver
+
+    - LDAP_HOST=ldap://ldapserver:389
+    - LDAP_BIND_DN=cn=binduser,dc=whatever,dc=org
+    - LDAP_BIND_PW=surepassword
+    - LDAP_BASE_DN=dc=hostname,dc=com
+    - LDAP_ATTRIBUTE=uid
+    - LDAP_SCOPE=sub
+    - LDAP_FILTER=(objectClass=*)
+    - LDAP_GROUP_ATTRIBUTE=uniquemember
     networks:
       - proxy-tier
     restart: always
