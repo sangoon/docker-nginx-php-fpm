@@ -1,14 +1,15 @@
 #!/usr/bin/with-contenv bash
 
-if [ ! -f /tmp/state/20-php-fpm ]; then
-sleep 1
+while [ ! -f /tmp/state/10-* ]
+do
+  sleep 1
+done
 
-	### Start php-fpm
+if [ ! -f /tmp/state/20-php-fpm ]; then
+### Start php-fpm
 	mkdir -p /www/logs/php-fpm
 	chown -R nginx /www/logs/php-fpm
-	mkdir -p /tmp/state/
 	echo 'Initialization Complete' >/tmp/state/20-php-fpm
-    
 fi
 
 echo ''
