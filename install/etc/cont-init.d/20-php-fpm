@@ -85,11 +85,6 @@
 ### Timezone Config
   echo 'date.timezone='$TIMEZONE >> /etc/php7/conf.d/timezone.ini
 
-### SMTP Config
-  if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
-    echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php7/conf.d/msmtp.ini
-  fi
-  
 ### Debug Mode
   if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ];  then
     PHP_XDEBUG_PROFILER_DIR=${PHP_XDEBUG_PROFILER_DIR:-"/www/logs/xdebug/"}
@@ -183,6 +178,16 @@
     if [ "$PHP_ENABLE_ZMQ" != "TRUE" ]; then  rm -rf /etc/php7/50_xmq.ini; fi;
  fi
 
+ if [ "$DEBUG_SMTP" = "TRUE" ] || [ "DEBUG_SMTP" = "true" ] || [ "DEBUG_MODE" = "true" ] || [ "DEBUG_MODE" = "TRUE" ];  then
+    ENABLE_SMTP=FALSE
+    echo 'sendmail_path="/usr/local/bin/mhsendmail"' > /etc/php7/conf.d/smtp.ini
+ fi
+ 
+### SMTP Config
+  if [ "$ENABLE_SMTP" = "TRUE" ] || [ "$ENABLE_SMTP" = "true" ];  then
+    echo 'sendmail_path="/usr/bin/msmtp -C /etc/msmtp -t "' > /etc/php7/conf.d/smtp.ini
+  fi
+  
   sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
   mkdir -p /tmp/state
   touch /tmp/state/20-php-fpm-init
