@@ -70,7 +70,6 @@
 ### Adjust PHP Runtime Variables
   sed -i -e "s/<APC_SHM_SIZE>/$APC_SHM_SIZE/g" /etc/php7/conf.d/apcu.ini
   sed -i -e "s/<OPCACHE_MEM_SIZE>/$OPCACHE_MEM_SIZE/g" /etc/php7/conf.d/00_opcache.ini
-  sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
   sed -i -e "s/<PHP_MEMORY_LIMIT>/$PHP_MEMORY_LIMIT/g" /etc/php7/php-fpm.conf
   sed -i -e "s/<PHP_MEMORY_LIMIT>/$PHP_MEMORY_LIMIT/g" /etc/php7/php.ini
   sed -i -e "s/<PHP_TIMEOUT>/$PHP_TIMEOUT/g" /etc/php7/php.ini
@@ -114,7 +113,7 @@
     echo "xdebug.remote_handler = "$PHP_XDEBUG_REMOTE_HANDLER >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_host = "$PHP_XDEBUG_REMOTE_HOST >> /etc/php7/conf.d/xdebug.ini
     echo "xdebug.remote_port = "$PHP_XDEBUG_REMOTE_PORT >> /etc/php7/conf.d/xdebug.ini
-
+    PHP_LOG_LEVEL=debug
     echo '**** DEBUGGING MODE ACTIVATED: Please use your IDE to connect to: '{$PHP_XDEBUG_REMOTE_HOST}':'{$PHP_XDEBUG_REMOTE_PORT}
     if [ "$PHP_XDEBUG_PROFILER_ENABLE" = "1" ]; then
       echo '**** PROFILING MODE ACTIVATED: Please find the profiler logs at: '$PHP_XDEBUG_PROFILER_DIR
@@ -184,5 +183,6 @@
     if [ "$PHP_ENABLE_ZMQ" != "TRUE" ]; then  rm -rf /etc/php7/50_xmq.ini; fi;
  fi
 
+  sed -i -e "s/<PHP_LOG_LEVEL>/$PHP_LOG_LEVEL/g" /etc/php7/php-fpm.conf
   mkdir -p /tmp/state
   touch /tmp/state/20-php-fpm-init
