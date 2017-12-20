@@ -6,8 +6,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
       ENABLE_SMTP=TRUE
 
 ### Dependency Installation
-  RUN apk update && \
-      apk add \
+  RUN apk --no-cache add \
           ca-certificates \
           mariadb-client \
           openssl \
@@ -64,22 +63,17 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
           php7-xmlrpc \
           php7-zip \
           php7-zlib \
-          && \
-      apk add -u musl && \
-      rm -rf /var/cache/apk/* && \
-
+      && apk --no-cache add musl \
 ### Nginx and PHP7 Setup
-      sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd && \
-      sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd- && \
-      ln -s /sbin/php-fpm7 /sbin/php-fpm && \
-      ln -s /usr/bin/php7 /sbin/php && \
-
+      && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini\
+      && sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd\
+      && sed -i "s/nginx:x:100:101:nginx:\/var\/lib\/nginx:\/sbin\/nologin/nginx:x:100:101:nginx:\/www:\/bin\/bash/g" /etc/passwd-\
+      && ln -s /sbin/php-fpm7 /sbin/php-fpm\
+      && ln -s /usr/bin/php7 /sbin/php\
 ### Install PHP Composer
-      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-
+      && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer\
 ### WWW  Installation
-      mkdir -p /www/logs
+      && mkdir -p /www/logs
 
 ### Files Addition
   ADD install /
@@ -89,4 +83,3 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Entrypoint Configuration
   ENTRYPOINT ["/init"]
-

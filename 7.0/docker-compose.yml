@@ -1,8 +1,8 @@
-version: '2'
+version: '3.4'
 
 services:
   nginx-php-fpm-app:
-    image: registry.selfdesign.org/docker/nginx-php-fpm
+    image: localhost:5000/nginx-php-fpm
     container_name: nginx-php-fpm-app
     volumes:
     - ./data/:/www/html
@@ -22,13 +22,10 @@ services:
     - OPCACHE_MEM_SIZE=128
     - PHP_LOG_LEVEL=info
     - PHP_TIMEOUT=300
-    - TZ=America/Vancouver
+    - TZ=Europe/Paris
     networks:
-      - proxy-tier
+      - nginx-proxy
     restart: always
 
 networks:
-  proxy-tier:
-    external:
-      name: nginx-proxy
-
+  nginx-proxy:
